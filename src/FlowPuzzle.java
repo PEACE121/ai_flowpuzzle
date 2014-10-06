@@ -61,6 +61,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				{
 					vars.put(gridCell, new FlowVariable(gridCell, domains, i, j));
 				}
+
 			}
 		}
 		
