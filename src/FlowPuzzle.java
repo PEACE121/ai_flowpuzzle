@@ -51,22 +51,16 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 		{
 			for (int j = 0; j < grid.getGridSize(); j++)
 			{
-
-				vars.add(new Variable("pos" + i + "-" + j, domains));
-				List<String> neighbours = new ArrayList<String>();
-				 if(i>0) {
-					 neighbours.add("pos"+(i-1)+"-"+j);
-				 }
-				 if(i<grid.getGridSize()-1) {
-					 neighbours.add("pos"+(i+1)+"-"+j);
-				 }
-				 if(j>0) {
-					 neighbours.add("pos"+i+"-"+(j-1));
-				 }
-				 if(j<grid.getGridSize()-1) {
-					 neighbours.add("pos"+i+"-"+(j+1));
-				 }
-				 constraints.add(new Constraint(", variables));
+				String gridCell = createVariableName(i, j);
+				if (grid.getPositions()[i][j] != null)
+				{
+					List<IDomainAttribute> domain = new ArrayList<IDomainAttribute>();
+					domain.add(grid.getPositions()[i][j].getColor());
+					vars.put(gridCell, new FlowVariable(gridCell, domain, i, j));
+				} else
+				{
+					vars.put(gridCell, new FlowVariable(gridCell, domains, i, j));
+				}
 
 			}
 		}
