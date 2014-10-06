@@ -51,7 +51,7 @@ public class FlowPuzzle
 				 if(j<grid.getGridSize()-1) {
 					 neighbours.add("pos"+i+"-"+(j+1));
 				 }
-				 constraints.add(new Constraint(", variables))
+				 constraints.add(new Constraint(", variables));
 			}
 		}
 		
