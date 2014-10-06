@@ -2,6 +2,7 @@ import gac.IDomainAttribute;
 import gac.constraintNetwork.Constraint;
 import gac.constraintNetwork.Variable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,8 +38,20 @@ public class FlowPuzzle
 			for (int j = 0; j < grid.getGridSize(); j++)
 			{
 				vars.add(new Variable("pos" + i + "-" + j, domains));
-				// if()
-				// constraints.add(new Constraint(", variables))
+				List<String> neighbours = new ArrayList<String>();
+				 if(i>0) {
+					 neighbours.add("pos"+(i-1)+"-"+j);
+				 }
+				 if(i<grid.getGridSize()-1) {
+					 neighbours.add("pos"+(i+1)+"-"+j);
+				 }
+				 if(j>0) {
+					 neighbours.add("pos"+i+"-"+(j-1));
+				 }
+				 if(j<grid.getGridSize()-1) {
+					 neighbours.add("pos"+i+"-"+(j+1));
+				 }
+				 constraints.add(new Constraint(", variables))
 			}
 		}
 		
