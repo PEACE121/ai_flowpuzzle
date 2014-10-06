@@ -8,13 +8,16 @@ public class DomainColor implements IDomainAttribute
 	
 	private final Color	color;
 	
+	private final int		index;
+	
 	
 	/**
 	 * @param color
 	 */
-	public DomainColor(Color color)
+	public DomainColor(Color color, int index)
 	{
 		super();
+		this.index = index;
 		this.color = color;
 	}
 	
@@ -22,7 +25,7 @@ public class DomainColor implements IDomainAttribute
 	@Override
 	public int getNumericalRepresentation()
 	{
-		return color.getRGB();
+		return index;
 	}
 	
 	

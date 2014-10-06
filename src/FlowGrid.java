@@ -50,14 +50,17 @@ public class FlowGrid extends JPanel
 	
 	public void draw(Graphics g)
 	{
-		for (int i = 0; i < positions.length; i++)
+		if (positions != null)
 		{
-			for (int j = 0; j < positions[0].length; j++)
+			for (int i = 0; i < positions.length; i++)
 			{
-				if (positions[i][j] != null)
+				for (int j = 0; j < positions[0].length; j++)
 				{
-					g.setColor((positions[i][j].getColor().getColor()));
-					g.fillRect(rectSize * i, (rectSize * (positions[0].length - 1)) - rectSize * j, rectSize, rectSize);
+					if (positions[i][j] != null)
+					{
+						g.setColor((positions[i][j].getColor().getColor()));
+						g.fillRect(rectSize * i, (rectSize * (positions[0].length - 1)) - rectSize * j, rectSize, rectSize);
+					}
 				}
 			}
 		}
@@ -94,7 +97,6 @@ public class FlowGrid extends JPanel
 	@SuppressWarnings("resource")
 	public Position[][] readInput(String fileName)
 	{
-		Position[][] positions = null;// = new Position[][];
 		try
 		{
 			File file = new File(fileName);
@@ -148,4 +150,24 @@ public class FlowGrid extends JPanel
 	{
 		return domainSize;
 	}
+	
+	
+	/**
+	 * @return the positions
+	 */
+	public Position[][] getPositions()
+	{
+		return positions;
+	}
+	
+	
+	/**
+	 * @param positions the positions to set
+	 */
+	public void setPositions(Position[][] positions)
+	{
+		this.positions = positions;
+	}
+	
+	
 }
