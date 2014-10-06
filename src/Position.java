@@ -12,6 +12,8 @@ public class Position implements IState
 	private int				x;
 	private int				y;
 	
+	private final int		index;
+	
 	private DomainColor	color;
 	
 	
@@ -22,6 +24,7 @@ public class Position implements IState
 	public Position(int x, int y, int index)
 	{
 		super();
+		this.index = index;
 		this.color = getColor(index);
 		this.x = x;
 		this.y = y;
@@ -34,31 +37,31 @@ public class Position implements IState
 		switch (index)
 		{
 			case 0:
-				return new DomainColor(Color.red);
+				return new DomainColor(Color.red, index);
 			case 1:
-				return new DomainColor(Color.blue);
+				return new DomainColor(Color.blue, index);
 			case 2:
-				return new DomainColor(Color.green);
+				return new DomainColor(Color.green, index);
 			case 3:
-				return new DomainColor(Color.yellow);
+				return new DomainColor(Color.yellow, index);
 			case 4:
-				return new DomainColor(Color.pink);
+				return new DomainColor(Color.pink, index);
 			case 5:
-				return new DomainColor(Color.orange);
+				return new DomainColor(Color.orange, index);
 			case 6:
-				return new DomainColor(Color.cyan);
+				return new DomainColor(Color.cyan, index);
 			case 7:
-				return new DomainColor(Color.gray);
+				return new DomainColor(Color.gray, index);
 			case 8:
-				return new DomainColor(Color.magenta);
+				return new DomainColor(Color.magenta, index);
 			case 9:
-				return new DomainColor(new Color(188, 143, 143));
+				return new DomainColor(new Color(188, 143, 143), index);
 			case 10:
-				return new DomainColor(new Color(160, 32, 240));
+				return new DomainColor(new Color(160, 32, 240), index);
 			case 11:
-				return new DomainColor(new Color(34, 139, 34));
+				return new DomainColor(new Color(34, 139, 34), index);
 			default:
-				return new DomainColor(Color.black);
+				return new DomainColor(Color.black, index);
 		}
 	}
 	
@@ -125,6 +128,15 @@ public class Position implements IState
 	public void setY(int y)
 	{
 		this.y = y;
+	}
+	
+	
+	/**
+	 * @return the index
+	 */
+	public int getIndex()
+	{
+		return index;
 	}
 	
 	
