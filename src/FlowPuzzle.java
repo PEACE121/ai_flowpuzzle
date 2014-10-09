@@ -61,7 +61,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				{
 					vars.put(gridCell, new FlowVariable(gridCell, domains, i, j));
 				}
-
+				
 			}
 		}
 		
@@ -90,19 +90,32 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				Map<String, Variable> variableOfConstraint = new HashMap<String, Variable>();
 				String constraint = "";
 				variableOfConstraint.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
-				for (String neighbour1 : neighbours)
+				
+				for (int k = 0; k < neighbours.size(); k++)
 				{
+					String neighbour1 = neighbours.get(k);
 					variableOfConstraint.put(neighbour1, vars.get(neighbour1));
-					for (String neighbour2 : neighbours)
+					Position gridCell = grid.getPositions()[i][j];
+					if (gridCell == null)
 					{
-						if (!neighbour1.equals(neighbour2))
+						for (int k2 = k; k2 < neighbours.size(); k2++)
 						{
-							constraint += "(" + createVariableName(i, j) + "==" + neighbour1 + "&&" + neighbour1 + "=="
-									+ neighbour2 + ")" + " || ";
+							String neighbour2 = neighbours.get(k2);
+							if (!neighbour1.equals(neighbour2))
+							{
+								constraint += "(" + createVariableName(i, j) + " == " + neighbour1 + " && " + neighbour1
+										+ " == " + neighbour2 + ")" + " || ";
+								
+							}
 						}
+					} else
+					{
+						constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
 					}
 				}
+				
 				constraint = constraint.substring(0, constraint.length() - 4);
+				System.out.println(constraint);
 				
 				constraints.add(new Constraint(constraint, variableOfConstraint));
 			}
@@ -110,6 +123,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 		List<Variable> variables = new ArrayList<Variable>(vars.values());
 		AStarAdapter aStarGAC = new AStarAdapter(constraints, variables, ENextVariable.COMPLEX2);
 		aStarGAC.register(this);
+		aStarGAC.domainFilteringLoop();
 		AStar aStarInstance = new AStar(aStarGAC);
 		aStarInstance.register(this);
 		aStarInstance.run();
@@ -141,10 +155,21 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 			{
 				positions[variable.getX()][variable.getY()] = new Position(variable.getX(), variable.getY(), vi.getDomain()
 						.get(0).getNumericalRepresentation());
+			} else if (vi.getDomain().size() == 0)
+			{
+				positions[variable.getX()][variable.getY()] = new Position(variable.getX(), variable.getY(), 7);
 			}
 		}
 		grid.setPositions(positions);
 		grid.refreshField();
+		try
+		{
+			Thread.sleep(0);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// TODO Auto-generated method stub
 	}
 }
