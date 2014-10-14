@@ -51,7 +51,7 @@ public class Position implements IState
 			case 6:
 				return new DomainColor(Color.cyan, index);
 			case 7:
-				return new DomainColor(Color.gray, index);
+				return new DomainColor(new Color(153, 0, 76), index);
 			case 8:
 				return new DomainColor(Color.magenta, index);
 			case 9:
@@ -61,7 +61,7 @@ public class Position implements IState
 			case 11:
 				return new DomainColor(new Color(34, 139, 34), index);
 			default:
-				return new DomainColor(Color.black, index);
+				return new DomainColor(Color.gray, index);
 		}
 	}
 	
@@ -151,4 +151,59 @@ public class Position implements IState
 		System.out.println("Warning: Comparing Position with something else");
 		return false;
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "Position [x=" + x + ", y=" + y + ", index=" + index + "]";
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + index;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Position other = (Position) obj;
+		if (index != other.index)
+			return false;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		return true;
+	}
+	
 }

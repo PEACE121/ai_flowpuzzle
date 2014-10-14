@@ -21,6 +21,7 @@ public class FlowGrid extends JPanel
 	
 	private Position[][]			positions;
 	
+	private Position[][]			initPositions;
 	
 	private int						domainSize			= 0;
 	
@@ -112,6 +113,7 @@ public class FlowGrid extends JPanel
 						int size = getIntFromPair(line, 0);
 						domainSize = getIntFromPair(line, 1);
 						positions = new Position[size][size];
+						initPositions = new Position[size][size];
 						break;
 					default:
 						positions[getIntFromPair(line, 1)][getIntFromPair(line, 2)] = new Position(getIntFromPair(line, 1),
@@ -127,6 +129,16 @@ public class FlowGrid extends JPanel
 		} catch (IOException e)
 		{
 			e.printStackTrace();
+		}
+		for (int i = 0; i < positions.length; i++)
+		{
+			for (int j = 0; j < positions[0].length; j++)
+			{
+				if (positions[i][j] != null)
+				{
+					initPositions[i][j] = positions[i][j];
+				}
+			}
 		}
 		rectSize = MAX_SIZE / positions.length;
 		return positions;
@@ -167,6 +179,24 @@ public class FlowGrid extends JPanel
 	public void setPositions(Position[][] positions)
 	{
 		this.positions = positions;
+	}
+	
+	
+	/**
+	 * @return the initPositions
+	 */
+	public Position[][] getInitPositions()
+	{
+		return initPositions;
+	}
+	
+	
+	/**
+	 * @param initPositions the initPositions to set
+	 */
+	public void setInitPositions(Position[][] initPositions)
+	{
+		this.initPositions = initPositions;
 	}
 	
 	

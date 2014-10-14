@@ -1,4 +1,3 @@
-import gac.AStarAdapter;
 import gac.ENextVariable;
 import gac.GACState;
 import gac.IDomainAttribute;
@@ -23,12 +22,19 @@ import astarframework.Node;
 public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 {
 	private final FlowGrid	grid;
+	private final AStar		aStarInstance;
+	
+	
+	public FlowPuzzle(String fileName)
+	{
+		this(fileName, ENextVariable.COMPLEX2);
+	}
 	
 	
 	/**
 	 * 
 	 */
-	public FlowPuzzle(String fileName)
+	public FlowPuzzle(String fileName, ENextVariable heuristicGac)
 	{
 		super();
 		
@@ -115,17 +121,22 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				}
 				
 				constraint = constraint.substring(0, constraint.length() - 4);
-				System.out.println(constraint);
+				// System.out.println(constraint);
 				
 				constraints.add(new Constraint(constraint, variableOfConstraint));
 			}
 		}
 		List<Variable> variables = new ArrayList<Variable>(vars.values());
-		AStarAdapter aStarGAC = new AStarAdapter(constraints, variables, ENextVariable.COMPLEX2);
+		FlowAStarAdapter aStarGAC = new FlowAStarAdapter(constraints, variables, heuristicGac, grid);
 		aStarGAC.register(this);
 		aStarGAC.domainFilteringLoop();
-		AStar aStarInstance = new AStar(aStarGAC);
+		aStarInstance = new AStar(aStarGAC);
 		aStarInstance.register(this);
+	}
+	
+	
+	public void run()
+	{
 		aStarInstance.run();
 	}
 	
@@ -157,7 +168,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 						.get(0).getNumericalRepresentation());
 			} else if (vi.getDomain().size() == 0)
 			{
-				positions[variable.getX()][variable.getY()] = new Position(variable.getX(), variable.getY(), 7);
+				positions[variable.getX()][variable.getY()] = new Position(variable.getX(), variable.getY(), 99);
 			}
 		}
 		grid.setPositions(positions);
