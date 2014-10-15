@@ -96,34 +96,43 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				Map<String, Variable> variableOfConstraint = new HashMap<String, Variable>();
 				String constraint = "";
 				variableOfConstraint.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
-				
+				Position gridCell = grid.getPositions()[i][j];
 				for (int k = 0; k < neighbours.size(); k++)
 				{
-					String neighbour1 = neighbours.get(k);
-					variableOfConstraint.put(neighbour1, vars.get(neighbour1));
-					Position gridCell = grid.getPositions()[i][j];
-					if (gridCell == null)
+					if (!(gridCell == null))
 					{
-						for (int k2 = k; k2 < neighbours.size(); k2++)
-						{
-							String neighbour2 = neighbours.get(k2);
-							if (!neighbour1.equals(neighbour2))
-							{
-								constraint += "(" + createVariableName(i, j) + " == " + neighbour1 + " && " + neighbour1
-										+ " == " + neighbour2 + ")" + " || ";
-								
-							}
-						}
+						// empty grid cell
+						String neighbour1 = neighbours.get(k);
+						variableOfConstraint.put(neighbour1, vars.get(neighbour1));
+						constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
 					} else
 					{
-						constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
+						// init color
+						Map<String, Variable> variableOfConstraint2 = new HashMap<String, Variable>();
+						variableOfConstraint2.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
+						String constraint2 = "";
+						for (int k2 = 0; k2 < neighbours.size(); k2++)
+						{
+							if (!neighbours.get(k).equals(neighbours.get(k2)))
+							{
+								variableOfConstraint2.put(neighbours.get(k2), vars.get(neighbours.get(k2)));
+								constraint2 += "(" + createVariableName(i, j) + " == " + neighbours.get(k2) + ")" + " || ";
+							}
+						}
+						if (!constraint2.equals(""))
+						{
+							constraint2 = constraint2.substring(0, constraint2.length() - 4);
+							System.out.println("2:" + constraint2);
+							constraints.add(new Constraint(constraint2, variableOfConstraint2));
+						}
 					}
 				}
-				
-				constraint = constraint.substring(0, constraint.length() - 4);
-				// System.out.println(constraint);
-				
-				constraints.add(new Constraint(constraint, variableOfConstraint));
+				if (!constraint.equals(""))
+				{
+					constraint = constraint.substring(0, constraint.length() - 4);
+					System.out.println("1:" + constraint);
+					constraints.add(new Constraint(constraint, variableOfConstraint));
+				}
 			}
 		}
 		List<Variable> variables = new ArrayList<Variable>(vars.values());
@@ -137,7 +146,10 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 	
 	public void run()
 	{
+		long start = System.currentTimeMillis();
 		aStarInstance.run();
+		long runtime = System.currentTimeMillis() - start;
+		System.out.println("Runtime: " + runtime);
 	}
 	
 	
@@ -150,6 +162,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 	@Override
 	public void update(Node app, boolean force)
 	{
+		System.out.println("AStar assumption");
 		GACState gacState = (GACState) app.getState();
 		update(gacState, force);
 	}
