@@ -3,6 +3,8 @@ import gac.GACState;
 import gac.IDomainAttribute;
 import gac.IGACObersvers;
 import gac.constraintNetwork.Constraint;
+import gac.constraintNetwork.EEvaluationType;
+import gac.constraintNetwork.NashornScriptEngine;
 import gac.constraintNetwork.Variable;
 import gac.instances.VI;
 
@@ -27,14 +29,14 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 	
 	public FlowPuzzle(String fileName)
 	{
-		this(fileName, ENextVariable.COMPLEX2);
+		this(fileName, ENextVariable.COMPLEX2, EConstraintType.MAX_5);
 	}
 	
 	
 	/**
 	 * 
 	 */
-	public FlowPuzzle(String fileName, ENextVariable heuristicGac)
+	public FlowPuzzle(String fileName, ENextVariable heuristicGac, EConstraintType constraintType)
 	{
 		super();
 		
@@ -97,33 +99,61 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 				String constraint = "";
 				variableOfConstraint.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
 				Position gridCell = grid.getPositions()[i][j];
-				for (int k = 0; k < neighbours.size(); k++)
+				if (constraintType == EConstraintType.MAX_5)
 				{
-					if (!(gridCell == null))
+					NashornScriptEngine.getInstance().setEvalType(EEvaluationType.MAX_FLOW_HACK);
+					for (int k = 0; k < neighbours.size(); k++)
 					{
-						// empty grid cell
 						String neighbour1 = neighbours.get(k);
 						variableOfConstraint.put(neighbour1, vars.get(neighbour1));
-						constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
-					} else
-					{
-						// init color
-						Map<String, Variable> variableOfConstraint2 = new HashMap<String, Variable>();
-						variableOfConstraint2.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
-						String constraint2 = "";
-						for (int k2 = 0; k2 < neighbours.size(); k2++)
+						if (gridCell == null)
 						{
-							if (!neighbours.get(k).equals(neighbours.get(k2)))
+							for (int k2 = k; k2 < neighbours.size(); k2++)
 							{
-								variableOfConstraint2.put(neighbours.get(k2), vars.get(neighbours.get(k2)));
-								constraint2 += "(" + createVariableName(i, j) + " == " + neighbours.get(k2) + ")" + " || ";
+								String neighbour2 = neighbours.get(k2);
+								if (!neighbour1.equals(neighbour2))
+								{
+									constraint += "(" + createVariableName(i, j) + " == " + neighbour1 + " && " + neighbour1
+											+ " == " + neighbour2 + ")" + " || ";
+									
+								}
 							}
-						}
-						if (!constraint2.equals(""))
+						} else
 						{
-							constraint2 = constraint2.substring(0, constraint2.length() - 4);
-							System.out.println("2:" + constraint2);
-							constraints.add(new Constraint(constraint2, variableOfConstraint2));
+							constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
+						}
+					}
+				} else
+				{
+					NashornScriptEngine.getInstance().setEvalType(EEvaluationType.MAX_FLOW_SHORTER_CONSTRAINTS_HACK);
+					for (int k = 0; k < neighbours.size(); k++)
+					{
+						if (!(gridCell == null))
+						{
+							// empty grid cell
+							String neighbour1 = neighbours.get(k);
+							variableOfConstraint.put(neighbour1, vars.get(neighbour1));
+							constraint += "(" + createVariableName(i, j) + " == " + neighbours.get(k) + ")" + " || ";
+						} else
+						{
+							// init color
+							Map<String, Variable> variableOfConstraint2 = new HashMap<String, Variable>();
+							variableOfConstraint2.put(createVariableName(i, j), vars.get(createVariableName(i, j)));
+							String constraint2 = "";
+							for (int k2 = 0; k2 < neighbours.size(); k2++)
+							{
+								if (!neighbours.get(k).equals(neighbours.get(k2)))
+								{
+									variableOfConstraint2.put(neighbours.get(k2), vars.get(neighbours.get(k2)));
+									constraint2 += "(" + createVariableName(i, j) + " == " + neighbours.get(k2) + ")" + " || ";
+								}
+							}
+							if (!constraint2.equals(""))
+							{
+								constraint2 = constraint2.substring(0, constraint2.length() - 4);
+								System.out.println("2:" + constraint2);
+								constraints.add(new Constraint(constraint2, variableOfConstraint2));
+							}
 						}
 					}
 				}
@@ -149,7 +179,7 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 		long start = System.currentTimeMillis();
 		aStarInstance.run();
 		long runtime = System.currentTimeMillis() - start;
-		System.out.println("Runtime: " + runtime);
+		System.out.println("Runtime: " + runtime + " ms");
 	}
 	
 	
@@ -162,7 +192,6 @@ public class FlowPuzzle implements IGACObersvers, IAStarObersvers
 	@Override
 	public void update(Node app, boolean force)
 	{
-		System.out.println("AStar assumption");
 		GACState gacState = (GACState) app.getState();
 		update(gacState, force);
 	}
