@@ -47,7 +47,7 @@ public class Position implements IState
 			case 4:
 				return new DomainColor(Color.pink, index);
 			case 5:
-				return new DomainColor(Color.orange, index);
+				return new DomainColor(new Color(255, 153, 51), index);
 			case 6:
 				return new DomainColor(Color.cyan, index);
 			case 7:
@@ -60,6 +60,10 @@ public class Position implements IState
 				return new DomainColor(new Color(160, 32, 240), index);
 			case 11:
 				return new DomainColor(new Color(34, 139, 34), index);
+			case 12:
+				return new DomainColor(new Color(51, 153, 0), index);
+			case 13:
+				return new DomainColor(new Color(102, 51, 0), index);
 			default:
 				return new DomainColor(Color.gray, index);
 		}
